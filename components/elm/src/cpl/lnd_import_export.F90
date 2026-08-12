@@ -370,8 +370,16 @@ contains
             !Figure out the closest point and which zone file to open
             mindist=99999
             do g3 = 1,ng
+              thislon = longxy(g3)
+              ! cpl_bypass met longitude can be 0-360 while the domain longitude
+              ! may be -180-180, or vice versa.
+              if (ldomain%lonc(g) .lt. 0) then
+                if (thislon >= 180._r8) thislon = thislon - 360._r8
+              else if (ldomain%lonc(g) .ge. 180._r8) then
+                if (thislon < 0._r8) thislon = thislon + 360._r8
+              end if
               thisdist = 100*((latixy(g3) - ldomain%latc(g))**2 + &
-                              (longxy(g3) - ldomain%lonc(g))**2)**0.5
+                              (thislon - ldomain%lonc(g))**2)**0.5
               if (thisdist .lt. mindist) then 
                 mindist = thisdist
                 ztoget = zone_map(g3)
