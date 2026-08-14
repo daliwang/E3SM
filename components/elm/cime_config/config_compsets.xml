@@ -648,6 +648,11 @@
    </compset>
 
    <compset>
+    <alias>I1850ERACNPRDCTCBC</alias>
+    <lname>1850_DATM%ERAf09_ELM%CNPRDCTCBC_SICE_SOCN_MOSART_SGLC_SWAV</lname>
+   </compset>
+
+   <compset>
     <alias>I1850GSWCNPRDCTCBCTOP</alias>
     <lname>1850_DATM%GSWP3v1_ELM%CNPRDCTCBCTOP_SICE_SOCN_MOSART_SGLC_SWAV</lname>
    </compset>

@@ -40,6 +40,7 @@
     uELM_TES   = Run with the uELM ERA5/daymet forcing (force high res. ELM) 
     ELMERA5             = Run with the ELM fifth generation ECMWF reanalysis from 1979 to present
     ERA56HR             = Run with the ELM fifth generation ECMWF reanalysis from 1979 to present
+    ERAf09          = ERA5 6-hourly remapped to f09 (0.9x1.25)
     ELMGSWP3w5e5        = Run with the ELM GSWP3-w5e5 forcing (force ELM)
     CLMMOSARTTEST   	= Run with the CLM NLDAS data (force CLM) for testing MOSART
     CLMNLDAS2		= Run with the CLM NLDAS2 regional forcing valid from 1980 to 2018 (force CLM)
@@ -140,6 +141,15 @@
     ERA56HR.d2m # dew point temperature at 2 m
     ERA56HR.w10 # wind speed at 10 m
     ERA56HR.msdwlwrf # mean surface downward longwave radiation flux
+    ERAf09.msdrswrf # mean surface direct shortwave radiation flux
+    ERAf09.msdfswrf # mean surface diffuse shortwave radiation flux
+    ERAf09.mcpr # mean convective precipitation rate
+    ERAf09.mlspr # mean large-scale precipitation rate
+    ERAf09.t2m # temperature at 2 m
+    ERAf09.sp # surface pressure
+    ERAf09.d2m # dew point temperature at 2 m
+    ERAf09.w10 # wind speed at 10 m
+    ERAf09.msdwlwrf # mean surface downward longwave radiation flux
    
     ELMGSWP3w5e5.Solar
     ELMGSWP3w5e5.Precip
@@ -262,6 +272,7 @@
       <value datm_mode="CLMGSWP3v1">CLMGSWP3v1.Solar,CLMGSWP3v1.Precip,CLMGSWP3v1.TPQW</value>
       <value datm_mode="ELMERA5">ELMERA5.msdrswrf,ELMERA5.msdfswrf,ELMERA5.mcpr,ELMERA5.mlspr,ELMERA5.t2m,ELMERA5.sp,ELMERA5.d2m,ELMERA5.w10,ELMERA5.msdwlwrf</value>
       <value datm_mode="ERA56HR">ERA56HR.msdrswrf,ERA56HR.msdfswrf,ERA56HR.mcpr,ERA56HR.mlspr,ERA56HR.t2m,ERA56HR.sp,ERA56HR.d2m,ERA56HR.w10,ERA56HR.msdwlwrf</value>
+      <value datm_mode="ERAf09">ERAf09.msdrswrf,ERAf09.msdfswrf,ERAf09.mcpr,ERAf09.mlspr,ERAf09.t2m,ERAf09.sp,ERAf09.d2m,ERAf09.w10,ERAf09.msdwlwrf</value>
       <value datm_mode="ELMGSWP3w5e5">ELMGSWP3w5e5.Solar,ELMGSWP3w5e5.Precip,ELMGSWP3w5e5.TPQW</value>
       <value datm_mode="uELM_NA">uELM_NA.FSDS,uELM_NA.FLDS,uELM_NA.TBOT,uELM_NA.QBOT,uELM_NA.PRECTmms,uELM_NA.PSRF,uELM_NA.WIND</value>
       <value datm_mode="uELM_TES">uELM_TES.Prec,uELM_TES.Solr,uELM_TES.TPQWL</value> 
@@ -303,6 +314,7 @@
       <value stream="CLMGSWP3v1">$DIN_LOC_ROOT_CLMFORC/atm_forcing.datm7.GSWP3.0.5d.v1.c170516</value>
       <value stream="ELMERA5">$DIN_LOC_ROOT_CLMFORC/atm_forcing.datm7.ERA.0.25d.v5.c180614</value>
       <value stream="ERA56HR">$DIN_LOC_ROOT_CLMFORC/atm_forcing.datm7.ERA.6HRLY.0.25d.v5.c180614</value>
+      <value stream="ERAf09">$DIN_LOC_ROOT_CLMFORC/ERA5_6hr_f09</value>
       <value stream="ELMGSWP3w5e5">$DIN_LOC_ROOT/share/domains</value>
       <value stream="uELM_NA">$DIN_LOC_ROOT/share/domains/domain.clm/</value>
       <value stream="uELM_TES">$DIN_LOC_ROOT_CLMFORC/atm_forcing.datm7.km.1d</value>
@@ -382,6 +394,7 @@
       <value stream="CLMGSWP3">domain.lnd.360x720_gswp3.0v1.c170606.nc</value>
       <value stream="ELMERA5">domain.lnd.era5_721x1440_rdrlat_EC30to60E2r2.221115.nc</value>
       <value stream="ERA56HR">domain.lnd.era5_721x1440_rdrlat_EC30to60E2r2.221115.nc</value>
+      <value stream="ERAf09">domain.lnd.fv0.9x1.25_gx1v6.090309.nc</value>
       <value stream="ELMGSWP3w5e5">domain.lnd.360x720_gswp3.0v1.c170606.nc</value>
       <value stream="uELM_NA">MOF21_domain.lnd.Daymet_NA.1km.1d.c240524.nc</value>
       <value stream="uELM_TES">domain.lnd.Daymet.km.1d.nc</value>
@@ -600,14 +613,23 @@
       <value stream="ELMERA5.w10">$DIN_LOC_ROOT_CLMFORC/atm_forcing.datm7.ERA.0.25d.v5.c180614/wind</value>
       <value stream="ELMERA5.msdwlwrf">$DIN_LOC_ROOT_CLMFORC/atm_forcing.datm7.ERA.0.25d.v5.c180614/lwdn</value>
       <value stream="ERA56HR.msdfswrf">$DIN_LOC_ROOT_CLMFORC/atm_forcing.datm7.ERA.6HRLY.0.25d.v5.c180614/swdn</value>
+      <value stream="ERAf09.msdfswrf">$DIN_LOC_ROOT_CLMFORC/ERA5_6hr_f09/swdn</value>
       <value stream="ERA56HR.msdrswrf">$DIN_LOC_ROOT_CLMFORC/atm_forcing.datm7.ERA.6HRLY.0.25d.v5.c180614/swdn</value>
+      <value stream="ERAf09.msdrswrf">$DIN_LOC_ROOT_CLMFORC/ERA5_6hr_f09/swdn</value>
       <value stream="ERA56HR.mcpr">$DIN_LOC_ROOT_CLMFORC/atm_forcing.datm7.ERA.6HRLY.0.25d.v5.c180614/prec</value>
+      <value stream="ERAf09.mcpr">$DIN_LOC_ROOT_CLMFORC/ERA5_6hr_f09/prec</value>
       <value stream="ERA56HR.mlspr">$DIN_LOC_ROOT_CLMFORC/atm_forcing.datm7.ERA.6HRLY.0.25d.v5.c180614/prec</value>
+      <value stream="ERAf09.mlspr">$DIN_LOC_ROOT_CLMFORC/ERA5_6hr_f09/prec</value>
       <value stream="ERA56HR.t2m">$DIN_LOC_ROOT_CLMFORC/atm_forcing.datm7.ERA.6HRLY.0.25d.v5.c180614/tbot</value>
+      <value stream="ERAf09.t2m">$DIN_LOC_ROOT_CLMFORC/ERA5_6hr_f09/tbot</value>
       <value stream="ERA56HR.sp">$DIN_LOC_ROOT_CLMFORC/atm_forcing.datm7.ERA.6HRLY.0.25d.v5.c180614/pbot</value>
+      <value stream="ERAf09.sp">$DIN_LOC_ROOT_CLMFORC/ERA5_6hr_f09/pbot</value>
       <value stream="ERA56HR.d2m">$DIN_LOC_ROOT_CLMFORC/atm_forcing.datm7.ERA.6HRLY.0.25d.v5.c180614/tdew</value>
+      <value stream="ERAf09.d2m">$DIN_LOC_ROOT_CLMFORC/ERA5_6hr_f09/tdew</value>
       <value stream="ERA56HR.w10">$DIN_LOC_ROOT_CLMFORC/atm_forcing.datm7.ERA.6HRLY.0.25d.v5.c180614/wind</value>
+      <value stream="ERAf09.w10">$DIN_LOC_ROOT_CLMFORC/ERA5_6hr_f09/wind</value>
       <value stream="ERA56HR.msdwlwrf">$DIN_LOC_ROOT_CLMFORC/atm_forcing.datm7.ERA.6HRLY.0.25d.v5.c180614/lwdn</value>
+      <value stream="ERAf09.msdwlwrf">$DIN_LOC_ROOT_CLMFORC/ERA5_6hr_f09/lwdn</value>
       <value stream="uELM_NA.FSDS">$DIN_LOC_ROOT_CLMFORC/atm_forcing.datm7.km.1d</value>
       <value stream="uELM_NA.FLDS">$DIN_LOC_ROOT_CLMFORC/atm_forcing.datm7.km.1d</value>
       <value stream="uELM_NA.TBOT">$DIN_LOC_ROOT_CLMFORC/atm_forcing.datm7.km.1d</value>
@@ -719,14 +741,23 @@
       <value  stream="ELMERA5.w10">elmforc.ERA5.c2018.0.25d.w10.%ym.nc</value>
       <value  stream="ELMERA5.msdwlwrf">elmforc.ERA5.c2018.0.25d.msdwlwrf.%ym.nc</value>
       <value  stream="ERA56HR.msdrswrf">elmforc.ERA5.c2018.0.25d.msdrswrf.%ym.nc</value>
+      <value  stream="ERAf09.msdrswrf">elmforc.ERA5.c2018.0.9x1.25.msdrswrf.%ym.nc</value>
       <value  stream="ERA56HR.msdfswrf">elmforc.ERA5.c2018.0.25d.msdfswrf.%ym.nc</value>
+      <value  stream="ERAf09.msdfswrf">elmforc.ERA5.c2018.0.9x1.25.msdfswrf.%ym.nc</value>
       <value  stream="ERA56HR.mcpr">elmforc.ERA5.c2018.0.25d.mcpr.%ym.nc</value>
+      <value  stream="ERAf09.mcpr">elmforc.ERA5.c2018.0.9x1.25.mcpr.%ym.nc</value>
       <value  stream="ERA56HR.mlspr">elmforc.ERA5.c2018.0.25d.mlspr.%ym.nc</value>
+      <value  stream="ERAf09.mlspr">elmforc.ERA5.c2018.0.9x1.25.mlspr.%ym.nc</value>
       <value  stream="ERA56HR.t2m">elmforc.ERA5.c2018.0.25d.t2m.%ym.nc</value>
+      <value  stream="ERAf09.t2m">elmforc.ERA5.c2018.0.9x1.25.t2m.%ym.nc</value>
       <value  stream="ERA56HR.sp">elmforc.ERA5.c2018.0.25d.sp.%ym.nc</value>
+      <value  stream="ERAf09.sp">elmforc.ERA5.c2018.0.9x1.25.sp.%ym.nc</value>
       <value  stream="ERA56HR.d2m">elmforc.ERA5.c2018.0.25d.d2m.%ym.nc</value>
+      <value  stream="ERAf09.d2m">elmforc.ERA5.c2018.0.9x1.25.d2m.%ym.nc</value>
       <value  stream="ERA56HR.w10">elmforc.ERA5.c2018.0.25d.w10.%ym.nc</value>
+      <value  stream="ERAf09.w10">elmforc.ERA5.c2018.0.9x1.25.w10.%ym.nc</value>
       <value  stream="ERA56HR.msdwlwrf">elmforc.ERA5.c2018.0.25d.msdwlwrf.%ym.nc</value>
+      <value  stream="ERAf09.msdwlwrf">elmforc.ERA5.c2018.0.9x1.25.msdwlwrf.%ym.nc</value>
       <value  stream="ELMGSWP3w5e5.Solar">gswp_w5e5.Solr.%ym.nc</value>
       <value  stream="ELMGSWP3w5e5.Precip">gswp_w5e5.Prec.%ym.nc</value>
       <value  stream="ELMGSWP3w5e5.TPQW">gswp_w5e5.TPQWL.%ym.nc</value>
@@ -1797,7 +1828,13 @@
       <value  stream="ERA56HR.msdrswrf">
         msdrswrf    swdndr
       </value>
+      <value  stream="ERAf09.msdrswrf">
+        msdrswrf    swdndr
+      </value>
       <value  stream="ERA56HR.msdfswrf">
+        msdfswrf    swdndf
+      </value>
+      <value  stream="ERAf09.msdfswrf">
         msdfswrf    swdndf
       </value>
 
@@ -1840,22 +1877,43 @@
       <value  stream="ERA56HR.mcpr">
         mcpr    precc
       </value>
+      <value  stream="ERAf09.mcpr">
+        mcpr    precc
+      </value>
       <value  stream="ERA56HR.mlspr">
+        mlspr    precl
+      </value>
+      <value  stream="ERAf09.mlspr">
         mlspr    precl
       </value>
       <value  stream="ERA56HR.t2m">
         t2m    tbot
       </value>
+      <value  stream="ERAf09.t2m">
+        t2m    tbot
+      </value>
       <value  stream="ERA56HR.sp">
+        sp    pbot
+      </value>
+      <value  stream="ERAf09.sp">
         sp    pbot
       </value>
       <value  stream="ERA56HR.d2m">
         d2m    tdew
       </value>
+      <value  stream="ERAf09.d2m">
+        d2m    tdew
+      </value>
       <value  stream="ERA56HR.w10">
         w10    wind
       </value>
+      <value  stream="ERAf09.w10">
+        w10    wind
+      </value>
       <value  stream="ERA56HR.msdwlwrf">
+        msdwlwrf    lwdn
+      </value>
+      <value  stream="ERAf09.msdwlwrf">
         msdwlwrf    lwdn
       </value>
       <value  stream="ELMGSWP3w5e5.Solar">
@@ -2151,6 +2209,7 @@
       <value stream="CLMGSWP3">$DATM_CLMNCEP_YR_ALIGN</value>
       <value stream="ELMERA5">$DATM_CLMNCEP_YR_ALIGN</value>
       <value stream="ERA56HR">$DATM_CLMNCEP_YR_ALIGN</value>
+      <value stream="ERAf09">$DATM_CLMNCEP_YR_ALIGN</value>
       <value stream="ELMGSWP3w5e5">$DATM_CLMNCEP_YR_ALIGN</value>
       <value stream="uELM_NA">$DATM_CLMNCEP_YR_ALIGN</value>
       <value stream="uELM_TES">$DATM_CLMNCEP_YR_ALIGN</value>
@@ -2211,6 +2270,7 @@
       <value stream="CLMGSWP3">$DATM_CLMNCEP_YR_START</value>
       <value stream="ELMERA5">$DATM_CLMNCEP_YR_START</value>
       <value stream="ERA56HR">$DATM_CLMNCEP_YR_START</value>
+      <value stream="ERAf09">$DATM_CLMNCEP_YR_START</value>
       <value stream="ELMGSWP3w5e5">$DATM_CLMNCEP_YR_START</value>
       <value stream="uELM_NA">$DATM_CLMNCEP_YR_START</value>
       <value stream="uELM_TES">$DATM_CLMNCEP_YR_START</value>
@@ -2293,6 +2353,7 @@
       <value stream="CLMGSWP3">$DATM_CLMNCEP_YR_END  </value>
       <value stream="ELMERA5">$DATM_CLMNCEP_YR_END  </value>
       <value stream="ERA56HR">$DATM_CLMNCEP_YR_END  </value>
+      <value stream="ERAf09">$DATM_CLMNCEP_YR_END  </value>
       <value stream="ELMGSWP3w5e5">$DATM_CLMNCEP_YR_END  </value>
       <value stream="uELM_NA">$DATM_CLMNCEP_YR_END</value>
       <value stream="uELM_TES">$DATM_CLMNCEP_YR_END</value>  
@@ -2379,10 +2440,15 @@
       <value stream="ELMERA5.mlspr">-60</value>
       <value stream="ELMERA5.msdwlwrf">-60</value>
       <value stream="ERA56HR.msdrswrf">-21600</value>
+      <value stream="ERAf09.msdrswrf">-21600</value>
       <value stream="ERA56HR.msdfswrf">-21600</value>
+      <value stream="ERAf09.msdfswrf">-21600</value>
       <value stream="ERA56HR.mcpr">-60</value>
+      <value stream="ERAf09.mcpr">-60</value>
       <value stream="ERA56HR.mlspr">-60</value>
+      <value stream="ERAf09.mlspr">-60</value>
       <value stream="ERA56HR.msdwlwrf">-60</value>
+      <value stream="ERAf09.msdwlwrf">-60</value>
       <value stream="E3SMWCv2Forcing.Solar">2700</value>
       <value stream="E3SMWCv2Forcing.nonSolarFlux">900</value>
       <value stream="E3SMWCv2Forcing.State3hr">900</value>
@@ -2463,6 +2529,7 @@
       <value datm_mode="CLM">CLMNCEP</value>
       <value datm_mode="ELMERA5">CLMNCEP</value>
       <value datm_mode="ERA56HR">CLMNCEP</value>
+      <value datm_mode="ERAf09">CLMNCEP</value>
       <value datm_mode="uELM">CLMNCEP</value>
       <value datm_mode="ELM">CLMNCEP</value>
       <value datm_mode="CORE2_NYF">CORE2_NYF</value>
@@ -2509,6 +2576,7 @@
 	<value>nn</value>
 	<value stream="ELMERA5">copy</value>
 	<value stream="ERA56HR">copy</value>
+	<value stream="ERAf09">copy</value>
     </values>
   </entry>
 
@@ -2688,6 +2756,11 @@
       <value stream="ERA56HR.mcpr">upper</value>
       <value stream="ERA56HR.mlspr">linear</value>
       <value stream="ERA56HR.msdwlwrf">linear</value>
+      <value stream="ERAf09.msdrswrf">coszen</value>
+      <value stream="ERAf09.msdfswrf">coszen</value>
+      <value stream="ERAf09.mcpr">upper</value>
+      <value stream="ERAf09.mlspr">linear</value>
+      <value stream="ERAf09.msdwlwrf">linear</value>
       <value stream="ELMGSWP3w5e5.Solar">coszen</value>
       <value stream="ELMGSWP3w5e5.Precip">nearest</value>
       <value stream="uELM_NA.FSDS">coszen</value>
@@ -2811,6 +2884,15 @@
       <value stream="ERA56HR.d2m">2.5</value>
       <value stream="ERA56HR.w10">2.5</value>
       <value stream="ERA56HR.msdwlwrf">2.5</value>
+      <value stream="ERAf09.msdrswrf">2.5</value>
+      <value stream="ERAf09.msdfswrf">2.5</value>
+      <value stream="ERAf09.mcpr">2.5</value>
+      <value stream="ERAf09.mlspr">2.5</value>
+      <value stream="ERAf09.t2m">2.5</value>
+      <value stream="ERAf09.sp">2.5</value>
+      <value stream="ERAf09.d2m">2.5</value>
+      <value stream="ERAf09.w10">2.5</value>
+      <value stream="ERAf09.msdwlwrf">2.5</value>
 
       <value stream="E3SMWCv2Forcing.Solar">3.0</value>
       <value stream="E3SMWCv2Forcing.nonSolarFlux">3.0</value>

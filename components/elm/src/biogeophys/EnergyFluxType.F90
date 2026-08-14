@@ -449,7 +449,7 @@ contains
     dtime = get_step_size_real()
 
     call init_accum_field(name='BTRANAVG', units='-', &
-         desc='average over an hour of btran', accum_type='timeavg', accum_period=nint(3600._r8/dtime), &
+         desc='average over an hour of btran', accum_type='timeavg', accum_period=max(1,nint(3600._r8/dtime)), &
          subgrid_type='pft', numlev=1, init_value=0._r8)
 
   end subroutine InitAccBuffer
