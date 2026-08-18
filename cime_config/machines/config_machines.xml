@@ -1210,7 +1210,7 @@
     <DESC>Frontier exascale supercomputer at ORNL. 9408 nodes, Node: 4 AMD MI250X GPUs (2 GCDs) ~ 8 GPUs, 512 GB HDB2E, AMD EPYC 64 cores, 512GB DDR4 </DESC>
     <NODENAME_REGEX>.*frontier.*</NODENAME_REGEX>
     <OS>Linux</OS>
-    <COMPILERS>gnu,amdclang,crayclang,gnugpu,amdclanggpu,crayclanggpu</COMPILERS>
+    <COMPILERS>craygnu,gnu,amdclang,crayclang,gnugpu,amdclanggpu,crayclanggpu</COMPILERS>
     <MPILIBS>mpich</MPILIBS>
     <PROJECT>cli115</PROJECT>
     <SAVE_TIMING_DIR>/lustre/orion/cli115/world-shared/frontier</SAVE_TIMING_DIR>
@@ -1241,14 +1241,30 @@
       </arguments>
     </mpirun>
     <module_system type="module" allow_error="true">
-      <init_path lang="sh">/usr/share/lmod/lmod/init/sh</init_path>
-      <init_path lang="csh">/usr/share/lmod/lmod/init/csh</init_path>
-      <init_path lang="perl">/usr/share/lmod/lmod/init/perl</init_path>
-      <init_path lang="python">/usr/share/lmod/lmod/init/env_modules_python.py</init_path>
-      <cmd_path lang="perl">/usr/share/lmod/lmod/libexec/lmod perl</cmd_path>
+      <init_path lang="sh">/opt/cray/pe/lmod/lmod/init/sh</init_path>
+      <init_path lang="csh">/opt/cray/pe/lmod/lmod/init/csh</init_path>
+      <init_path lang="perl">/opt/cray/pe/lmod/lmod/init/perl</init_path>
+      <init_path lang="python">/opt/cray/pe/lmod/lmod/init/env_modules_python.py</init_path>
+      <cmd_path lang="perl">/opt/cray/pe/lmod/lmod/libexec/lmod perl</cmd_path>
       <cmd_path lang="sh">module</cmd_path>
       <cmd_path lang="csh">module</cmd_path>
-      <cmd_path lang="python">/usr/share/lmod/lmod/libexec/lmod python</cmd_path>
+      <cmd_path lang="python">/lustre/orion/cli115/world-shared/wangd/kmELM/scripts/cime_lmod_python_wrapper.sh python</cmd_path>
+      <modules compiler="craygnu.*">
+        <command name="reset"></command>
+        <!-- PrgEnv-gnu before cpe, or cray-mpich module doesn't update correctly -->
+        <command name="load">Core/25.03</command>
+        <command name="load">PrgEnv-gnu</command>
+        <command name="load">cpe/25.09</command>
+        <command name="load">gcc-native/14.2</command>
+        <command name="load">cray-python/3.11.7</command>
+        <command name="load">subversion</command>
+        <command name="load">git</command>
+        <command name="load">cmake</command>
+        <command name="load">cray-hdf5-parallel/1.14.3.7</command>
+        <command name="load">cray-netcdf-hdf5parallel/4.9.2.1</command>
+        <command name="load">cray-parallel-netcdf/1.12.3.19</command>
+        <command name="unload">darshan-runtime</command>
+      </modules>
       <modules compiler="crayclang.*">
         <command name="reset"></command>
         <command name="switch">Core/24.07</command>
@@ -1281,7 +1297,7 @@
         <command name="load">craype-accel-amd-gfx90a</command>
         <command name="load">rocm/5.4.0</command>
       </modules>
-      <modules>
+      <modules compiler="gnu.*|amdclang.*|crayclang.*|gnugpu|amdclanggpu|crayclanggpu">
         <command name="load">cray-python/3.11.5</command>
         <command name="load">cray-libsci</command>
         <command name="load">cmake/3.27.9</command>
