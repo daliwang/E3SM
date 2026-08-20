@@ -340,6 +340,9 @@ contains
      real(r8) :: frac_infclust                              ! fraction of submerged area that is connected
      real(r8) :: fsno                                       ! copy of frac_sno
      real(r8) :: k_wet                                      ! linear reservoir coefficient for h2osfc
+     real(r8) :: h2osfc_avail                               ! h2osfc after inputs/evap, before runoff (mm)
+     real(r8) :: deficit_flux                               ! unmet h2osfc evaporative demand (mm/s)
+     real(r8) :: infl_take                                  ! infiltration used to meet h2osfc deficit (mm/s)
      real(r8) :: fac                                        ! soil wetness of surface layer
      real(r8) :: psit                                       ! negative potential of soil
      real(r8) :: hr                                         ! relative humidity
@@ -396,6 +399,7 @@ contains
           qflx_evap_grnd       =>    col_wf%qflx_evap_grnd       , & ! Input:  [real(r8) (:)   ]  ground surface evaporation rate (mm H2O/s) [+]
           qflx_top_soil        =>    col_wf%qflx_top_soil        , & ! Input:  [real(r8) (:)   ]  net water input into soil from top (mm/s)
           qflx_ev_h2osfc       =>    col_wf%qflx_ev_h2osfc       , & ! Input:  [real(r8) (:)   ]  evaporation flux from h2osfc (W/m**2) [+ to atm]
+          qflx_evap_tot        =>    col_wf%qflx_evap_tot        , & ! InOut:  [real(r8) (:)   ]  total column evaporation (mm H2O/s) [+]
           qflx_surf            =>    col_wf%qflx_surf            , & ! Output: [real(r8) (:)   ]  surface runoff (mm H2O /s)
           qflx_h2osfc_surf     =>    col_wf%qflx_h2osfc_surf     , & ! Output: [real(r8) (:)   ]  surface water runoff (mm/s)
           qflx_infl            =>    col_wf%qflx_infl            , & ! Output: [real(r8) (:)   ] infiltration (mm H2O /s)
@@ -552,6 +556,24 @@ contains
              qflx_gross_infl_soil(c) = qflx_gross_infl_soil(c)- qflx_infl_excess(c)
 
              !5. surface runoff from h2osfc
+             ! Apply inputs/evaporation first so runoff cannot overshoot remaining
+             ! storage. Needed for long land timesteps (ERA5 6-hr coupling).
+             h2osfc_avail = h2osfc(c) + qflx_in_h2osfc(c) * dtime
+             if (h2osfc_avail < 0.0_r8) then
+                deficit_flux = -h2osfc_avail / dtime
+                infl_take = min(max(qflx_infl(c), 0.0_r8), deficit_flux)
+                qflx_infl(c) = qflx_infl(c) - infl_take
+                qflx_gross_evap_soil(c) = qflx_gross_evap_soil(c) + infl_take
+                deficit_flux = deficit_flux - infl_take
+                if (deficit_flux > 0.0_r8) then
+                   ! Evaporation demanded more water than h2osfc + infiltration had.
+                   ! Reduce column evap so the water-balance fluxes match the state.
+                   qflx_ev_h2osfc(c) = qflx_ev_h2osfc(c) - deficit_flux
+                   qflx_evap_tot(c)  = qflx_evap_tot(c)  - deficit_flux
+                end if
+                h2osfc_avail = 0.0_r8
+             end if
+
              if (h2osfcflag==1) then
                 ! calculate runoff from h2osfc  -------------------------------------
                 !if (use_modified_infil) then
@@ -577,7 +599,7 @@ contains
                 vdep = (2_r8*iwp_exclvol(c) - iwp_microrel(c)) * (iwp_ddep(c)/iwp_microrel(c))**3_r8 &
                        + (2_r8*iwp_microrel(c) - 3_r8*iwp_exclvol(c)) * (iwp_ddep(c)/iwp_microrel(c))**2_r8
                 phi_eff = min(iwp_subsidence(c), 0.4_r8)  !fix this variable when available to pull from alt calculations
-                swc = h2osfc(c)/1000_r8 ! convert to m
+                swc = h2osfc_avail/1000_r8 ! convert to m
                 
                 if (swc >= vdep) then
                    if (lun_pp%polygontype(col_pp%landunit(c)) == ilowcenpoly) then
@@ -593,13 +615,12 @@ contains
                 endif
                 
              else
-                ! limit runoff to value of storage above S(pc)
-                if(h2osfc(c) >= h2osfc_thresh(c) .and. h2osfcflag/=0) then
-                   ! spatially variable k_wet
-                   k_wet=1.0e-4_r8 * sin((rpi/180._r8) * max(col_pp%topo_slope(c), 1.0e-3_r8))
-                   qflx_h2osfc_surf(c) = k_wet * frac_infclust * (h2osfc(c) - h2osfc_thresh(c))
-
-                   qflx_h2osfc_surf(c)=min(qflx_h2osfc_surf(c),(h2osfc(c) - h2osfc_thresh(c))/dtime)
+                ! CLM tech note: q_out = k * f_connected * (W_sfc - W_c) / dt
+                ! with k = sin(slope). Cap so runoff cannot exceed available excess.
+                if(h2osfc_avail >= h2osfc_thresh(c) .and. h2osfcflag/=0) then
+                   k_wet = sin((rpi/180._r8) * max(col_pp%topo_slope(c), 1.0e-3_r8))
+                   qflx_h2osfc_surf(c) = k_wet * frac_infclust * (h2osfc_avail - h2osfc_thresh(c)) / dtime
+                   qflx_h2osfc_surf(c) = min(qflx_h2osfc_surf(c),(h2osfc_avail - h2osfc_thresh(c))/dtime)
                 else
                    qflx_h2osfc_surf(c)= 0._r8
                 endif
@@ -620,13 +641,15 @@ contains
              qflx_in_h2osfc(c) =  qflx_in_h2osfc(c) - qflx_h2osfc_surf(c)
 
              !6. update h2osfc prior to calculating bottom drainage from h2osfc
-             h2osfc(c) = h2osfc(c) + qflx_in_h2osfc(c) * dtime
+             h2osfc(c) = h2osfc_avail - qflx_h2osfc_surf(c) * dtime
+             if (h2osfc(c) < 0.0_r8) then
+                qflx_h2osfc_surf(c) = qflx_h2osfc_surf(c) + h2osfc(c)/dtime
+                h2osfc(c) = 0.0_r8
+             end if
 
              !--  if all water evaporates, there will be no bottom drainage
-             if (h2osfc(c) < 0.0) then
-                qflx_infl(c) = qflx_infl(c) + h2osfc(c)/dtime
-                qflx_gross_evap_soil(c) = qflx_gross_evap_soil(c) - h2osfc(c)/dtime
-                h2osfc(c) = 0.0
+             if (h2osfc(c) <= 0.0_r8) then
+                h2osfc(c) = 0.0_r8
                 qflx_h2osfc_drain(c)= 0._r8
              else
                 if ( use_modified_infil ) then

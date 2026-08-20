@@ -65,3 +65,9 @@ components/eamxx/src/python/dist
 components/emulators/build
 **/Testing/**
 **/.cache/**
+
+# Local CIME case and run directories
+e3sm_case/
+e3sm_cases/
+e3sm_run/
+e3sm_runs/
