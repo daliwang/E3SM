@@ -867,6 +867,9 @@
       <!-- Partition comes from JOB_QUEUE (-p). Both CPU queues are 128 cores/node, 24 h max.
            Default parallel must not land on the 84-core GPU nodes that share that partition. -->
       <directives>
+        <!-- Slurm on Pathfinder rejects jobs with no memory request. 400g fits both
+             the ~2.2 TiB pfc nodes and the ~503 GiB hpcl-cli185 nodes. -->
+        <directive> --mem=400g</directive>
         <directive> -c 1</directive>
         <directive> --ntasks-per-node=$SHELL{ total=$(./xmlquery --value TOTAL_TASKS 2>/dev/null || ./xmlquery --value TOTALPES 2>/dev/null); if [[ -z "$total" || "$total" -eq 0 ]]; then echo 128; elif [[ $total -lt 128 ]]; then echo $total; else echo 128; fi }</directive>
       </directives>
