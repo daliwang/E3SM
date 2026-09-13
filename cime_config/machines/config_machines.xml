@@ -4518,7 +4518,7 @@
   </machine>
 
   <machine MACH="pathfinder">
-    <DESC>OR-CONDO, CADES-CCSI, os is Linux, 128 pes/node, batch system is Slurm</DESC>
+    <DESC>Pathfinder (pflogin). Default queue parallel uses 128-core high-memory CPU nodes (pfc001-pfc030 class, 2x64-core AMD EPYC, ~2.2 TiB). Optional queue hpcl-cli185 is the 20-node project partition (also 128 cores, ~515 GB).</DESC>
     <NODENAME_REGEX>pflogin</NODENAME_REGEX>
     <OS>LINUX</OS>
     <COMPILERS>gnu</COMPILERS>

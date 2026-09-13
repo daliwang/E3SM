@@ -864,16 +864,23 @@
    </batch_system>
 
    <batch_system MACH="pathfinder" type="slurm">
+      <!-- Partition comes from JOB_QUEUE (-p). Both CPU queues are 128 cores/node, 24 h max.
+           Default parallel must not land on the 84-core GPU nodes that share that partition. -->
       <directives>
-        <directive> -p parallel</directive>
-        <directive> -q normal</directive>
-        <directive> --mem-per-cpu=0gb</directive>
         <directive> -c 1</directive>
-        <directive> -N $SHELL{ echo $(./xmlquery --value NUM_NODES) }</directive>
         <directive> --ntasks-per-node=$SHELL{ total=$(./xmlquery --value TOTAL_TASKS 2>/dev/null || ./xmlquery --value TOTALPES 2>/dev/null); if [[ -z "$total" || "$total" -eq 0 ]]; then echo 128; elif [[ $total -lt 128 ]]; then echo $total; else echo 128; fi }</directive>
       </directives>
+      <directives queue="parallel">
+        <directive> -q normal</directive>
+        <!-- NDR selects the high-memory 128-core CPU nodes (pfc003-pfc030; docs pfc001-pfc030). -->
+        <directive> --constraint=NDR</directive>
+      </directives>
+      <directives queue="hpcl-cli185">
+        <directive> -q hpcl-cli185</directive>
+      </directives>
       <queues>
-        <queue walltimemax="24:00:00" nodemin="1" nodemax="9999" default="true" strict="true">parallel</queue>
+        <queue walltimemax="24:00:00" nodemin="1" nodemax="30" default="true" strict="true">parallel</queue>
+        <queue walltimemax="24:00:00" nodemin="1" nodemax="20">hpcl-cli185</queue>
       </queues>
     </batch_system>
 
